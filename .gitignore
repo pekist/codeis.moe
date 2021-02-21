@@ -1,0 +1,6 @@
+dist-*
+cabal-dev
+_site
+_cache
+result
+images
