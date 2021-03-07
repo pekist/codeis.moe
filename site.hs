@@ -1,9 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Data.Monoid (mappend)
 import           Hakyll
+import qualified GHC.IO.Encoding as E
+import Text.Pandoc
+import Text.Pandoc.Walk (walk)
 
 main :: IO ()
-main = hakyll $ do
+main = do
+  E.setLocaleEncoding E.utf8
+  hakyll $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -12,15 +17,22 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.org", "contact.org"]) $ do
+    match "about.org" $ do
         route   $ setExtension "html"
-        compile $ pandocCompiler
+        compile $ (pandocCompilerWithTransform
+            defaultHakyllReaderOptions
+            defaultHakyllWriterOptions
+            addLinkClass)
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
+        compile $
+          (pandocCompilerWithTransform
+            defaultHakyllReaderOptions
+            defaultHakyllWriterOptions
+            addLinkClass)
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
@@ -54,6 +66,12 @@ main = hakyll $ do
                 >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler
+
+addLinkClass :: Pandoc -> Pandoc
+addLinkClass = walk f where
+  f (Link (id, classes, kv) inline target) =
+    Link (id, "link" : classes, kv) inline target
+  f x = x 
 
 postCtx :: Context String
 postCtx =

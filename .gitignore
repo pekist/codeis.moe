@@ -4,3 +4,5 @@ _site
 _cache
 result
 images
+node_modules
+css/styles.css

@@ -2,4 +2,8 @@
 title: About
 ---
 
-This is the about page
+I like strange languages and I like talking about strange languages.
+
+| Github  | [[https://github.com/pekist/][@pekist]]    |
+| Twitter | [[https://twitter.com/codeismoe][@codeismoe]] |
+

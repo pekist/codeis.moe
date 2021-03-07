@@ -1,7 +1,13 @@
 <ul>
     $for(posts)$
         <li>
-            <a href="$url$">$title$</a> - $date$
+          <a href="$url$">
+            $title$
+          </a>
+          <span class="subtext">&mdash; $date$</span>
+          $if(description)$
+            <br>$description$
+          $endif$
         </li>
     $endfor$
 </ul>
